@@ -1,0 +1,33 @@
+# Environment variable files (never commit secrets)
+.env
+.env.*
+!.env.example
+
+# Node dependencies & build output
+node_modules/
+dist/
+dist-ssr/
+build/
+
+# Python bytecode & cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Local Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Uploads & Temporary files
+temp_uploads/
+uploads/
+logs/
+*.log
+
+# Editor & OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
