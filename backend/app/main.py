@@ -64,4 +64,13 @@ app.include_router(health.router, prefix=f"{settings.API_V1_STR}/health", tags=[
 
 @app.get("/")
 async def root():
-    return {"message": "Smart Road Damage API v1.0", "status": "running"}
+    return {"message": "RoadVisionAI / Smart Road Damage API v1.0", "status": "running"}
+
+@app.get("/health")
+async def root_health():
+    return {
+        "status": "healthy",
+        "service": "RoadVisionAI API",
+        "version": "1.0.0",
+        "engine_mode": "ready"
+    }

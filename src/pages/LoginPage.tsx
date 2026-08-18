@@ -1,51 +1,89 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { ShieldCheck, LogIn, AlertCircle, Eye, EyeOff } from 'lucide-react';
+import { ShieldCheck, LogIn, AlertCircle, Eye, EyeOff, KeyRound, CheckCircle } from 'lucide-react';
 import { Button } from '../components/common/Button';
 
 export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { signInWithEmail, resetPasswordForEmail } = useAuth();
 
-  const [email, setEmail] = useState('operator@smartcity.gov');
-  const [password, setPassword] = useState('Password123!');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Forgot Password modal state
+  const [showForgotModal, setShowForgotModal] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState('');
+  const [forgotLoading, setForgotLoading] = useState(false);
+  const [forgotSuccess, setForgotSuccess] = useState<string | null>(null);
+  const [forgotError, setForgotError] = useState<string | null>(null);
+
+  const isValidEmail = (val: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    setIsLoading(false);
 
-    if (!email.trim() || !password) {
+    const cleanEmail = email.trim();
+
+    if (!cleanEmail || !password) {
       setError('Please fill in both email and password fields.');
+      return;
+    }
+
+    if (!isValidEmail(cleanEmail)) {
+      setError('Please enter a valid email address.');
       return;
     }
 
     setIsLoading(true);
 
     try {
-      // Simulate or call backend auth
-      await new Promise((r) => setTimeout(r, 650));
+      const { error: authError } = await signInWithEmail(cleanEmail, password);
 
-      if (email.toLowerCase() === 'operator@smartcity.gov' && password === 'Password123!') {
-        login('demo_jwt_token_operator_smartcity_2026', {
-          id: 'usr-demo123',
-          email: 'operator@smartcity.gov',
-          full_name: 'Smart City Operator',
-          organization: 'Road Infrastructure Ops Division',
-          role: 'operator',
-        });
-        navigate('/dashboard');
-      } else {
-        setError('Invalid email or password combination.');
+      if (authError) {
+        if (authError.message.toLowerCase().includes('invalid login credentials')) {
+          setError('Email or password is incorrect.');
+        } else {
+          setError(authError.message || 'Email or password is incorrect.');
+        }
+        return;
       }
+
+      navigate('/dashboard');
     } catch (err: any) {
-      setError('Authentication failed. Please verify credentials and try again.');
+      setError('Email or password is incorrect.');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setForgotError(null);
+    setForgotSuccess(null);
+
+    const cleanEmail = forgotEmail.trim();
+    if (!cleanEmail || !isValidEmail(cleanEmail)) {
+      setForgotError('Please enter a valid email address.');
+      return;
+    }
+
+    setForgotLoading(true);
+    try {
+      const { error: resetErr } = await resetPasswordForEmail(cleanEmail);
+      if (resetErr) {
+        setForgotError(resetErr.message || 'Failed to send password reset email.');
+      } else {
+        setForgotSuccess(`Password reset link sent to ${cleanEmail}. Check your inbox.`);
+      }
+    } catch (err: any) {
+      setForgotError('An error occurred. Please try again.');
+    } finally {
+      setForgotLoading(false);
     }
   };
 
@@ -57,7 +95,7 @@ export const LoginPage: React.FC = () => {
             <ShieldCheck className="w-8 h-8" />
           </div>
           <h2 className="text-2xl font-black text-slate-50">Operator Sign In</h2>
-          <p className="text-xs text-slate-400">Access protected Smart Road Damage monitoring console</p>
+          <p className="text-xs text-slate-400">Access RoadVisionAI command console via Supabase Auth</p>
         </div>
 
         {error && (
@@ -77,13 +115,27 @@ export const LoginPage: React.FC = () => {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="operator@smartcity.gov"
+              placeholder="operator@city.gov"
               className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 text-sm focus:outline-none focus:border-cyan-400"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">Password</label>
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="block text-xs font-semibold text-slate-300">Password</label>
+              <button
+                type="button"
+                onClick={() => {
+                  setForgotEmail(email);
+                  setForgotError(null);
+                  setForgotSuccess(null);
+                  setShowForgotModal(true);
+                }}
+                className="text-xs text-cyan-400 hover:underline font-medium"
+              >
+                Forgot Password?
+              </button>
+            </div>
             <div className="relative">
               <input
                 type={showPassword ? 'text' : 'password'}
@@ -112,7 +164,7 @@ export const LoginPage: React.FC = () => {
             isLoading={isLoading}
             icon={<LogIn className="w-4 h-4" />}
           >
-            Sign In to Console
+            Sign In with Supabase
           </Button>
         </form>
 
@@ -123,6 +175,85 @@ export const LoginPage: React.FC = () => {
           </Link>
         </div>
       </div>
+
+      {/* Forgot Password Modal */}
+      {showForgotModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 bg-cyan-500/10 text-cyan-400 rounded-xl">
+                <KeyRound className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-slate-100">Reset Password</h3>
+                <p className="text-xs text-slate-400">Receive a Supabase password recovery link</p>
+              </div>
+            </div>
+
+            {forgotError && (
+              <div className="p-3 rounded-xl bg-red-950/40 border border-red-800/60 text-xs text-red-300 flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
+                <span>{forgotError}</span>
+              </div>
+            )}
+
+            {forgotSuccess && (
+              <div className="p-3 rounded-xl bg-emerald-950/40 border border-emerald-800/60 text-xs text-emerald-300 flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
+                <span>{forgotSuccess}</span>
+              </div>
+            )}
+
+            {!forgotSuccess && (
+              <form onSubmit={handleForgotPassword} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">Registered Email</label>
+                  <input
+                    type="email"
+                    required
+                    value={forgotEmail}
+                    onChange={(e) => setForgotEmail(e.target.value)}
+                    placeholder="operator@city.gov"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 text-sm focus:outline-none focus:border-cyan-400"
+                  />
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowForgotModal(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    size="sm"
+                    isLoading={forgotLoading}
+                  >
+                    Send Recovery Email
+                  </Button>
+                </div>
+              </form>
+            )}
+
+            {forgotSuccess && (
+              <div className="pt-2 text-right">
+                <Button
+                  type="button"
+                  variant="primary"
+                  size="sm"
+                  onClick={() => setShowForgotModal(false)}
+                >
+                  Close
+                </Button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

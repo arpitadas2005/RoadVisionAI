@@ -57,3 +57,12 @@ export interface DashboardStats {
   averageConfidence: number;
   averageConditionScore: number;
 }
+
+export interface User {
+  id: string;
+  email: string;
+  fullName: string;
+  organization?: string;
+  role?: string;
+  createdAt?: string;
+}

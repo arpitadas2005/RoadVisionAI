@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Scan, BarChart3, History, Info, Home } from 'lucide-react';
+import { LayoutDashboard, Scan, BarChart3, History, User, Home } from 'lucide-react';
 
 export const MobileNav: React.FC = () => {
   const items = [
@@ -9,7 +9,7 @@ export const MobileNav: React.FC = () => {
     { label: 'Detect', path: '/detect', icon: <Scan className="w-5 h-5" /> },
     { label: 'Analytics', path: '/analytics', icon: <BarChart3 className="w-5 h-5" /> },
     { label: 'History', path: '/history', icon: <History className="w-5 h-5" /> },
-    { label: 'About', path: '/about', icon: <Info className="w-5 h-5" /> },
+    { label: 'Profile', path: '/profile', icon: <User className="w-5 h-5" /> },
   ];
 
   return (

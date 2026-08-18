@@ -1,19 +1,19 @@
 import type { DetectionResult, InputSource, SeverityLevel, DamageType } from '../types';
 import type { IDetectionService } from './IDetectionService';
 import { saveDetection } from './storageService';
+import { supabase } from './supabaseClient';
 
-// Standard Backend API Payload Schema
 export interface ApiDetectionResponse {
   detections: Array<{
-    damage_type: string; // 'pothole' | 'crack' | 'surface_damage' | 'other_defect'
-    confidence: number; // 0.0 to 1.0
+    damage_type: string;
+    confidence: number;
     bounding_box: {
       x: number;
       y: number;
       width: number;
       height: number;
     };
-    severity: string; // 'critical' | 'warning' | 'safe'
+    severity: string;
     description?: string;
     recommended_action?: string;
   }>;
@@ -29,7 +29,7 @@ export class ApiDetectionService implements IDetectionService {
   private timeoutMs: number;
 
   constructor(
-    apiUrl: string = import.meta.env.VITE_AI_API_URL || 'http://localhost:8000/api/v1/detect',
+    apiUrl: string = import.meta.env.VITE_AI_API_URL || 'http://localhost:8000/api/v1/detections',
     apiKey: string = import.meta.env.VITE_AI_API_KEY || '',
     timeoutMs: number = 15000
   ) {
@@ -47,17 +47,27 @@ export class ApiDetectionService implements IDetectionService {
     };
   }
 
+  private async getAuthToken(): Promise<string | null> {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      return session?.access_token || this.apiKey || null;
+    } catch {
+      return this.apiKey || null;
+    }
+  }
+
   public async checkHealth(): Promise<boolean> {
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 3000);
 
       const headers: Record<string, string> = {};
-      if (this.apiKey) {
-        headers['Authorization'] = `Bearer ${this.apiKey}`;
+      const token = await this.getAuthToken();
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
       }
 
-      const res = await fetch(this.apiUrl.replace(/\/detect$/, '/health'), {
+      const res = await fetch(this.apiUrl.replace(/\/detections$/, '/health'), {
         method: 'GET',
         headers,
         signal: controller.signal,
@@ -88,8 +98,9 @@ export class ApiDetectionService implements IDetectionService {
     const timeoutId = setTimeout(() => controller.abort(), this.timeoutMs);
 
     const headers: Record<string, string> = {};
-    if (this.apiKey) {
-      headers['Authorization'] = `Bearer ${this.apiKey}`;
+    const token = await this.getAuthToken();
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
     }
 
     let response: Response;
@@ -114,7 +125,7 @@ export class ApiDetectionService implements IDetectionService {
         throw new Error('File size too large for the AI backend API processing limit.');
       }
       if (response.status === 401 || response.status === 403) {
-        throw new Error('Authentication failed. Valid API Key required in configuration.');
+        throw new Error('Authentication failed. Active Supabase session or valid API token required.');
       }
       const errText = await response.text().catch(() => '');
       throw new Error(`AI Backend returned HTTP error ${response.status}: ${errText || response.statusText}`);
@@ -131,7 +142,6 @@ export class ApiDetectionService implements IDetectionService {
       throw new Error('Malformed AI detection payload: expected "detections" array in JSON response.');
     }
 
-    // Normalize detections
     const detections = apiData.detections.map((d, index) => {
       let type: DamageType = 'other_defect';
       const rawType = (d.damage_type || '').toLowerCase();
@@ -161,7 +171,6 @@ export class ApiDetectionService implements IDetectionService {
       };
     });
 
-    // Compute overall severity
     let overallSeverity: SeverityLevel = 'safe';
     if (detections.some((d) => d.severity === 'critical')) {
       overallSeverity = 'critical';
@@ -169,7 +178,6 @@ export class ApiDetectionService implements IDetectionService {
       overallSeverity = 'warning';
     }
 
-    // Compute condition score
     let roadConditionScore = apiData.road_condition_score;
     if (typeof roadConditionScore !== 'number') {
       if (overallSeverity === 'critical') roadConditionScore = 35;

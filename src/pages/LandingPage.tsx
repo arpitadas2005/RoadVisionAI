@@ -27,22 +27,22 @@ export const LandingPage: React.FC = () => {
           </div>
 
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-50 tracking-tight leading-tight">
-            AI-Powered Road Damage Detection
+            AI-Powered Road Damage Detection for Safer Roads
           </h1>
 
           <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-2xl">
-            Detect potholes, pavement cracks, and surface degradation in seconds. Smart Road Damage provides municipal teams and surveyors with instant visual AI annotations, severity ratings, and actionable road health reports.
+            Detect potholes, pavement cracks, and surface degradation in seconds. RoadVisionAI provides municipal teams and surveyors with instant visual AI annotations, severity ratings, and actionable road health reports.
           </p>
 
           <div className="flex flex-wrap items-center gap-4 pt-2">
             <Link to="/detect">
               <Button size="lg" variant="primary" icon={<Scan className="w-5 h-5" />}>
-                Start Detection
+                Analyze Road
               </Button>
             </Link>
             <Link to="/dashboard">
               <Button size="lg" variant="secondary" icon={<ArrowRight className="w-5 h-5" />}>
-                Explore Dashboard
+                View Dashboard
               </Button>
             </Link>
           </div>
@@ -78,10 +78,10 @@ export const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Why Smart Road Damage Is Useful */}
+      {/* Why RoadVisionAI Is Useful */}
       <section className="space-y-6">
         <div className="text-center max-w-xl mx-auto space-y-2">
-          <h2 className="text-2xl font-extrabold text-slate-50">Why Municipalities Choose Smart Road Damage</h2>
+          <h2 className="text-2xl font-extrabold text-slate-50">Why Municipalities Choose RoadVisionAI</h2>
           <p className="text-xs text-slate-400">Frictionless visual inspection designed for field surveyors and road authorities</p>
         </div>
 
@@ -156,7 +156,7 @@ export const LandingPage: React.FC = () => {
       <footer className="border-t border-slate-800 pt-8 pb-4 text-center text-xs text-slate-500 space-y-2">
         <div className="flex items-center justify-center gap-2 font-bold text-slate-300">
           <ShieldCheck className="w-4 h-4 text-cyan-400" />
-          <span>Smart Road Damage AI Monitoring System</span>
+          <span>RoadVisionAI Infrastructure Monitoring System</span>
         </div>
         <p>© 2026 Smart City Infrastructure Division. All rights reserved.</p>
       </footer>

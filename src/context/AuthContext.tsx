@@ -1,55 +1,136 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-
-export interface UserProfile {
-  id: string;
-  email: string;
-  full_name: string;
-  organization?: string;
-  role: string;
-}
+import { Session, User as SupabaseUser } from '@supabase/supabase-js';
+import { supabase } from '../services/supabaseClient';
+import { User } from '../types';
 
 interface AuthContextType {
-  user: UserProfile | null;
+  user: User | null;
+  supabaseUser: SupabaseUser | null;
+  session: Session | null;
   token: string | null;
+  loading: boolean;
   isAuthenticated: boolean;
-  login: (token: string, user: UserProfile) => void;
-  logout: () => void;
+  signInWithEmail: (email: string, password: string) => Promise<{ error: Error | null }>;
+  signUpWithEmail: (email: string, password: string, fullName: string, organization?: string) => Promise<{ error: Error | null; data?: any }>;
+  signOut: () => Promise<{ error: Error | null }>;
+  resetPasswordForEmail: (email: string) => Promise<{ error: Error | null }>;
 }
-
-const TOKEN_KEY = 'smart_road_damage_jwt_token_v1';
-const USER_KEY = 'smart_road_damage_user_profile_v1';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [token, setToken] = useState<string | null>(() => localStorage.getItem(TOKEN_KEY));
-  const [user, setUser] = useState<UserProfile | null>(() => {
-    const data = localStorage.getItem(USER_KEY);
-    return data ? JSON.parse(data) : null;
-  });
+  const [session, setSession] = useState<Session | null>(null);
+  const [supabaseUser, setSupabaseUser] = useState<SupabaseUser | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  const login = (newToken: string, newUser: UserProfile) => {
-    setToken(newToken);
-    setUser(newUser);
-    localStorage.setItem(TOKEN_KEY, newToken);
-    localStorage.setItem(USER_KEY, JSON.stringify(newUser));
+  // Map Supabase User & Metadata to RoadVisionAI User model
+  const user: User | null = supabaseUser
+    ? {
+        id: supabaseUser.id,
+        email: supabaseUser.email || '',
+        fullName: supabaseUser.user_metadata?.full_name || supabaseUser.email?.split('@')[0] || 'Road Surveyor',
+        organization: supabaseUser.user_metadata?.organization || 'Road Infrastructure Ops',
+        role: supabaseUser.user_metadata?.role || 'operator',
+        createdAt: supabaseUser.created_at,
+      }
+    : null;
+
+  useEffect(() => {
+    // 1. Initial Session Check
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setSupabaseUser(session?.user ?? null);
+      setLoading(false);
+    }).catch(() => {
+      setLoading(false);
+    });
+
+    // 2. Real-time Session & Auth State Listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      setSupabaseUser(session?.user ?? null);
+      setLoading(false);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  const signInWithEmail = async (email: string, password: string) => {
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password,
+      });
+
+      if (error) throw error;
+      setSession(data.session);
+      setSupabaseUser(data.user);
+      return { error: null };
+    } catch (err: any) {
+      return { error: err };
+    }
   };
 
-  const logout = () => {
-    setToken(null);
-    setUser(null);
-    localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(USER_KEY);
+  const signUpWithEmail = async (email: string, password: string, fullName: string, organization?: string) => {
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email: email.trim(),
+        password,
+        options: {
+          data: {
+            full_name: fullName.trim(),
+            organization: (organization || 'Municipal Survey Ops').trim(),
+            role: 'operator',
+          },
+        },
+      });
+
+      if (error) throw error;
+      return { error: null, data };
+    } catch (err: any) {
+      return { error: err };
+    }
+  };
+
+  const signOut = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      setSession(null);
+      setSupabaseUser(null);
+      return { error: null };
+    } catch (err: any) {
+      return { error: err };
+    }
+  };
+
+  const resetPasswordForEmail = async (email: string) => {
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      if (error) throw error;
+      return { error: null };
+    } catch (err: any) {
+      return { error: err };
+    }
   };
 
   return (
     <AuthContext.Provider
       value={{
         user,
-        token,
-        isAuthenticated: !!token,
-        login,
-        logout,
+        supabaseUser,
+        session,
+        token: session?.access_token || null,
+        loading,
+        isAuthenticated: !!session,
+        signInWithEmail,
+        signUpWithEmail,
+        signOut,
+        resetPasswordForEmail,
       }}
     >
       {children}

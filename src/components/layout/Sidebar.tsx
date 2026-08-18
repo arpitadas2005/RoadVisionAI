@@ -8,6 +8,7 @@ import {
   Info,
   ShieldCheck,
   Home,
+  User,
   ChevronRight,
 } from 'lucide-react';
 
@@ -18,6 +19,7 @@ export const Sidebar: React.FC = () => {
     { label: 'Detect Damage', path: '/detect', icon: <Scan className="w-5 h-5" /> },
     { label: 'Analytics', path: '/analytics', icon: <BarChart3 className="w-5 h-5" /> },
     { label: 'History', path: '/history', icon: <History className="w-5 h-5" /> },
+    { label: 'Profile', path: '/profile', icon: <User className="w-5 h-5" /> },
     { label: 'About Project', path: '/about', icon: <Info className="w-5 h-5" /> },
   ];
 

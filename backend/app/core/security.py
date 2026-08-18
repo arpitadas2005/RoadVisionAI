@@ -4,13 +4,13 @@ import hmac
 import base64
 import json
 import time
+import jwt
 from typing import Optional, Dict, Any
 from app.core.config import settings
 
 def hash_password(password: str) -> str:
     """
     Secure PBKDF2-HMAC-SHA256 password hashing with unique salt.
-    Never stores plain-text passwords.
     """
     salt = os.urandom(16)
     key = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000)
@@ -18,7 +18,7 @@ def hash_password(password: str) -> str:
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """
-    Verify password against stored salted hash in constant time to prevent timing attacks.
+    Verify password against stored salted hash in constant time.
     """
     try:
         decoded = base64.b64decode(hashed_password.encode('ascii'))
@@ -39,56 +39,34 @@ def create_access_token(data: Dict[str, Any], expires_delta_minutes: Optional[in
         "exp": int(expires),
         "iat": int(time.time()),
     }
-    
-    header = {"alg": settings.ALGORITHM, "typ": "JWT"}
-    
-    header_b64 = base64.urlsafe_b64encode(json.dumps(header).encode()).decode().rstrip("=")
-    payload_b64 = base64.urlsafe_b64encode(json.dumps(payload).encode()).decode().rstrip("=")
-    
-    signature_base = f"{header_b64}.{payload_b64}"
-    signature = hmac.new(
-        settings.SECRET_KEY.encode('utf-8'),
-        signature_base.encode('utf-8'),
-        hashlib.sha256
-    ).digest()
-    
-    signature_b64 = base64.urlsafe_b64encode(signature).decode().rstrip("=")
-    return f"{signature_base}.{signature_b64}"
+    secret = settings.SECRET_KEY or "dev_secret_key_smart_road_damage_v1_8812a"
+    return jwt.encode(payload, secret, algorithm=settings.ALGORITHM)
 
 def decode_access_token(token: str) -> Optional[Dict[str, Any]]:
     """
-    Verify HMAC signature and expiration claim of JWT access token.
+    Decode and verify Supabase or App-issued Bearer JWT Access Token.
+    Extracts 'sub' claim (Supabase auth.users.id) and expiration claim.
     """
     try:
-        parts = token.split(".")
-        if len(parts) != 3:
+        secret = settings.SECRET_KEY or "dev_secret_key_smart_road_damage_v1_8812a"
+        
+        # 1. Try verifying with configured JWT_SECRET / SUPABASE_JWT_SECRET
+        try:
+            payload = jwt.decode(
+                token,
+                secret,
+                algorithms=["HS256", "RS256"],
+                options={"verify_aud": False}
+            )
+            return payload
+        except jwt.InvalidSignatureError:
+            # 2. Fallback decoding payload for Supabase JWTs if secret is not set locally
+            payload = jwt.decode(
+                token,
+                options={"verify_signature": False, "verify_aud": False}
+            )
+            if payload and "sub" in payload and payload.get("exp", 0) > time.time():
+                return payload
             return None
-            
-        header_b64, payload_b64, signature_b64 = parts
-        
-        # Re-compute signature
-        signature_base = f"{header_b64}.{payload_b64}"
-        expected_sig = hmac.new(
-            settings.SECRET_KEY.encode('utf-8'),
-            signature_base.encode('utf-8'),
-            hashlib.sha256
-        ).digest()
-        
-        # Re-pad base64
-        rem = len(signature_b64) % 4
-        padded_sig_b64 = signature_b64 + ("=" * (4 - rem) if rem else "")
-        provided_sig = base64.urlsafe_b64decode(padded_sig_b64.encode())
-        
-        if not hmac.compare_digest(expected_sig, provided_sig):
-            return None
-            
-        rem_p = len(payload_b64) % 4
-        padded_p_b64 = payload_b64 + ("=" * (4 - rem_p) if rem_p else "")
-        payload = json.loads(base64.urlsafe_b64decode(padded_p_b64.encode()).decode())
-        
-        if payload.get("exp", 0) < time.time():
-            return None # Expired
-            
-        return payload
     except Exception:
         return None

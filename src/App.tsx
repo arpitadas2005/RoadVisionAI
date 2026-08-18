@@ -13,6 +13,7 @@ import { DetectPage } from './pages/DetectPage';
 import { ResultPage } from './pages/ResultPage';
 import { AnalyticsPage } from './pages/AnalyticsPage';
 import { HistoryPage } from './pages/HistoryPage';
+import { ProfilePage } from './pages/ProfilePage';
 import { AboutPage } from './pages/AboutPage';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
@@ -76,6 +77,14 @@ export function App() {
                   element={
                     <ProtectedRoute>
                       <HistoryPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/profile"
+                  element={
+                    <ProtectedRoute>
+                      <ProfilePage />
                     </ProtectedRoute>
                   }
                 />
