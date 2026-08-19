@@ -4,6 +4,7 @@ import { Cpu, Search, CheckCircle2 } from 'lucide-react';
 interface LoadingStateProps {
   title?: string;
   message?: string;
+  subtitle?: string;
 }
 
 const STEPS = [
@@ -12,7 +13,7 @@ const STEPS = [
   'Preparing results...',
 ];
 
-export const LoadingState: React.FC<LoadingStateProps> = () => {
+export const LoadingState: React.FC<LoadingStateProps> = ({ title, message, subtitle }) => {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [progress, setProgress] = useState(15);
 
@@ -46,10 +47,10 @@ export const LoadingState: React.FC<LoadingStateProps> = () => {
 
       {/* Progressive Step Text */}
       <h3 className="text-xl font-black text-slate-50 mb-2 tracking-tight transition-all">
-        {STEPS[currentStepIndex]}
+        {title || message || STEPS[currentStepIndex]}
       </h3>
       <p className="text-xs text-slate-400 max-w-sm mb-6">
-        Neural computer vision pipeline is segmenting road surface features and calculating defect severity ratings.
+        {subtitle || 'Neural computer vision pipeline is segmenting road surface features and calculating defect severity ratings.'}
       </p>
 
       {/* Progress Bar Container */}
