@@ -12,6 +12,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   signInWithEmail: (email: string, password: string) => Promise<{ error: Error | null }>;
   signUpWithEmail: (email: string, password: string, fullName: string, organization?: string) => Promise<{ error: Error | null; data?: any }>;
+  resendConfirmationEmail: (email: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<{ error: Error | null }>;
   resetPasswordForEmail: (email: string) => Promise<{ error: Error | null }>;
 }
@@ -75,10 +76,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signUpWithEmail = async (email: string, password: string, fullName: string, organization?: string) => {
     try {
+      const redirectUrl = `${window.location.origin}/login`;
       const { data, error } = await supabase.auth.signUp({
         email: email.trim(),
         password,
         options: {
+          emailRedirectTo: redirectUrl,
           data: {
             full_name: fullName.trim(),
             organization: (organization || 'Municipal Survey Ops').trim(),
@@ -89,6 +92,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (error) throw error;
       return { error: null, data };
+    } catch (err: any) {
+      return { error: err };
+    }
+  };
+
+  const resendConfirmationEmail = async (email: string) => {
+    try {
+      const redirectUrl = `${window.location.origin}/login`;
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email: email.trim(),
+        options: {
+          emailRedirectTo: redirectUrl,
+        },
+      });
+      if (error) throw error;
+      return { error: null };
     } catch (err: any) {
       return { error: err };
     }
@@ -129,6 +149,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isAuthenticated: !!session,
         signInWithEmail,
         signUpWithEmail,
+        resendConfirmationEmail,
         signOut,
         resetPasswordForEmail,
       }}

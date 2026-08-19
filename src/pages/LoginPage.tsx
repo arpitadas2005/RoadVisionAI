@@ -1,18 +1,23 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { ShieldCheck, LogIn, AlertCircle, Eye, EyeOff, KeyRound, CheckCircle } from 'lucide-react';
+import { ShieldCheck, LogIn, AlertCircle, Eye, EyeOff, KeyRound, CheckCircle, Mail } from 'lucide-react';
 import { Button } from '../components/common/Button';
 
 export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
-  const { signInWithEmail, resetPasswordForEmail } = useAuth();
+  const { signInWithEmail, resetPasswordForEmail, resendConfirmationEmail } = useAuth();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isUnconfirmedEmail, setIsUnconfirmedEmail] = useState(false);
+
+  // Resend confirmation email state
+  const [resendLoading, setResendLoading] = useState(false);
+  const [resendSuccess, setResendSuccess] = useState<string | null>(null);
 
   // Forgot Password modal state
   const [showForgotModal, setShowForgotModal] = useState(false);
@@ -26,6 +31,8 @@ export const LoginPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setIsUnconfirmedEmail(false);
+    setResendSuccess(null);
 
     const cleanEmail = email.trim();
 
@@ -45,10 +52,14 @@ export const LoginPage: React.FC = () => {
       const { error: authError } = await signInWithEmail(cleanEmail, password);
 
       if (authError) {
-        if (authError.message.toLowerCase().includes('invalid login credentials')) {
+        const msg = authError.message || '';
+        if (msg.toLowerCase().includes('email not confirmed')) {
+          setIsUnconfirmedEmail(true);
+          setError('Please confirm your email address before signing in. Check your inbox and spam folder for the verification link.');
+        } else if (msg.toLowerCase().includes('invalid login credentials')) {
           setError('Email or password is incorrect.');
         } else {
-          setError(authError.message || 'Email or password is incorrect.');
+          setError(msg || 'Email or password is incorrect.');
         }
         return;
       }
@@ -58,6 +69,29 @@ export const LoginPage: React.FC = () => {
       setError('Email or password is incorrect.');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleResendConfirmation = async () => {
+    const cleanEmail = email.trim();
+    if (!cleanEmail || !isValidEmail(cleanEmail)) {
+      setError('Please enter a valid email address to resend confirmation.');
+      return;
+    }
+
+    setResendLoading(true);
+    setResendSuccess(null);
+    try {
+      const { error: resendErr } = await resendConfirmationEmail(cleanEmail);
+      if (resendErr) {
+        setError(resendErr.message || 'Failed to resend confirmation email.');
+      } else {
+        setResendSuccess(`Confirmation link has been resent to ${cleanEmail}. Please check your inbox.`);
+      }
+    } catch (err: any) {
+      setError('An error occurred while resending the email.');
+    } finally {
+      setResendLoading(false);
     }
   };
 
@@ -99,9 +133,34 @@ export const LoginPage: React.FC = () => {
         </div>
 
         {error && (
-          <div className="p-3 rounded-xl bg-red-950/40 border border-red-800/60 text-xs text-red-300 flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
-            <span>{error}</span>
+          <div className="p-3 rounded-xl bg-red-950/40 border border-red-800/60 text-xs text-red-300 space-y-2">
+            <div className="flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
+              <span>{error}</span>
+            </div>
+
+            {isUnconfirmedEmail && (
+              <div className="pt-2 border-t border-red-900/40">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  isLoading={resendLoading}
+                  onClick={handleResendConfirmation}
+                  icon={<Mail className="w-3.5 h-3.5" />}
+                  className="w-full text-xs py-1.5"
+                >
+                  Resend Verification Email
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {resendSuccess && (
+          <div className="p-3 rounded-xl bg-emerald-950/40 border border-emerald-800/60 text-xs text-emerald-300 flex items-center gap-2">
+            <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
+            <span>{resendSuccess}</span>
           </div>
         )}
 
