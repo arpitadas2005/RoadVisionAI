@@ -19,17 +19,17 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   totalCount,
 }) => {
   return (
-    <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 mb-6 space-y-4">
+    <div className="bg-white border border-slate-200/80 rounded-3xl p-5 mb-6 space-y-4 shadow-sm">
       <div className="flex flex-wrap items-center justify-between gap-3">
         {/* Search Bar Input */}
         <div className="relative flex-1 min-w-[240px]">
-          <Search className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             value={filters.search}
             onChange={(e) => onChange({ ...filters, search: e.target.value })}
             placeholder="Search by location, filename, or hazard label..."
-            className="w-full pl-10 pr-4 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-cyan-400"
+            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 font-medium"
           />
         </div>
 
@@ -45,14 +45,14 @@ export const FilterBar: React.FC<FilterBarProps> = ({
       </div>
 
       {/* Dropdown Filters */}
-      <div className="flex flex-wrap items-center gap-3 pt-3 border-t border-slate-800/80 text-xs">
+      <div className="flex flex-wrap items-center gap-3 pt-3 border-t border-slate-100 text-xs">
         {/* Damage Type Dropdown */}
         <div className="flex items-center gap-2">
-          <span className="text-slate-400 font-semibold">Damage Type:</span>
+          <span className="text-slate-600 font-bold">Damage Type:</span>
           <select
             value={filters.damageType}
             onChange={(e) => onChange({ ...filters, damageType: e.target.value })}
-            className="px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-200 focus:outline-none focus:border-cyan-400"
+            className="px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-medium focus:outline-none focus:border-indigo-500"
           >
             <option value="all">All Defect Types</option>
             <option value="pothole">Pothole</option>
@@ -64,11 +64,11 @@ export const FilterBar: React.FC<FilterBarProps> = ({
 
         {/* Severity Filter */}
         <div className="flex items-center gap-2">
-          <span className="text-slate-400 font-semibold">Severity:</span>
+          <span className="text-slate-600 font-bold">Severity:</span>
           <select
             value={filters.severity}
             onChange={(e) => onChange({ ...filters, severity: e.target.value })}
-            className="px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-200 focus:outline-none focus:border-cyan-400"
+            className="px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-medium focus:outline-none focus:border-indigo-500"
           >
             <option value="all">All Severities</option>
             <option value="critical">Critical</option>
@@ -79,11 +79,11 @@ export const FilterBar: React.FC<FilterBarProps> = ({
 
         {/* Sort Order Dropdown */}
         <div className="flex items-center gap-2">
-          <span className="text-slate-400 font-semibold">Sort By:</span>
+          <span className="text-slate-600 font-bold">Sort By:</span>
           <select
             value={filters.sortBy}
             onChange={(e) => onChange({ ...filters, sortBy: e.target.value })}
-            className="px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-200 focus:outline-none focus:border-cyan-400"
+            className="px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-medium focus:outline-none focus:border-indigo-500"
           >
             <option value="newest">Newest First</option>
             <option value="oldest">Oldest First</option>
@@ -92,8 +92,8 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           </select>
         </div>
 
-        <div className="ml-auto text-slate-400 font-mono text-[11px]">
-          Showing <span className="text-cyan-400 font-bold">{totalCount}</span> entries
+        <div className="ml-auto text-slate-500 font-mono text-[11px] font-medium">
+          Showing <span className="text-indigo-600 font-bold">{totalCount}</span> entries
         </div>
       </div>
     </div>

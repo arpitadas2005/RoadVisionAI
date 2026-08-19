@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Cpu, PlusCircle, Server, LogOut, LogIn, User } from 'lucide-react';
+import { Cpu, PlusCircle, Server, LogOut, LogIn } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { getStoredEngineMode, getStoredApiUrl } from '../../services/detectionServiceFactory';
@@ -43,10 +43,10 @@ export const Navbar: React.FC = () => {
   const initials = displayName.slice(0, 2).toUpperCase();
 
   return (
-    <header className="sticky top-0 z-30 h-16 bg-slate-950/80 backdrop-blur-md border-b border-slate-800 px-4 md:px-8 flex items-center justify-between">
+    <header className="sticky top-0 z-30 h-16 bg-white/90 backdrop-blur-md border-b border-slate-200/80 px-4 md:px-8 flex items-center justify-between shadow-xs">
       {/* Page Title */}
       <div className="flex items-center gap-3">
-        <h1 className="text-base md:text-lg font-bold text-slate-100 tracking-tight flex items-center gap-2">
+        <h1 className="text-base md:text-lg font-bold text-slate-900 tracking-tight flex items-center gap-2">
           {currentTitle}
         </h1>
       </div>
@@ -55,15 +55,15 @@ export const Navbar: React.FC = () => {
       <div className="flex items-center gap-3 md:gap-4">
         {/* Live AI Engine Status Pill */}
         <Link to="/detect" title={`Engine Mode: ${engineMode === 'api' ? 'Real API' : 'Simulated'}`}>
-          <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/40 border border-cyan-800/40 text-xs font-mono text-cyan-300 hover:border-cyan-500/60 transition-colors">
+          <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs font-mono text-slate-700 hover:border-indigo-300 transition-colors shadow-xs">
             {engineMode === 'api' ? (
-              <Server className="w-3.5 h-3.5 text-amber-400" />
+              <Server className="w-3.5 h-3.5 text-amber-600" />
             ) : (
-              <Cpu className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
+              <Cpu className="w-3.5 h-3.5 text-indigo-600 animate-pulse" />
             )}
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-            <span>
-              {engineMode === 'api' ? `API: ${apiUrl.replace(/^https?:\/\//, '').slice(0, 18)}...` : 'AI Engine: Simulated'}
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+            <span className="font-semibold">
+              {engineMode === 'api' ? `API: ${apiUrl.replace(/^https?:\/\//, '').slice(0, 18)}...` : 'AI Engine: Active'}
             </span>
           </div>
         </Link>
@@ -72,7 +72,7 @@ export const Navbar: React.FC = () => {
         {isAuthenticated && (
           <Link
             to="/detect"
-            className="hidden md:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs transition-all shadow-md shadow-cyan-500/20 active:scale-95"
+            className="hidden md:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs transition-all shadow-sm shadow-indigo-200 active:scale-95"
           >
             <PlusCircle className="w-4 h-4" />
             <span>New Inspection</span>
@@ -80,25 +80,25 @@ export const Navbar: React.FC = () => {
         )}
 
         {/* User Profile / Auth State Controls */}
-        <div className="flex items-center gap-2 pl-2 border-l border-slate-800">
+        <div className="flex items-center gap-2 pl-2 border-l border-slate-200">
           {isAuthenticated && user ? (
             <div className="flex items-center gap-2">
               <Link
                 to="/profile"
-                className="flex items-center gap-2 p-1 rounded-xl hover:bg-slate-900 transition-colors"
+                className="flex items-center gap-2.5 p-1 rounded-xl hover:bg-slate-100 transition-colors"
                 title="View Profile Settings"
               >
-                <div className="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-cyan-400 font-bold text-xs">
+                <div className="w-8 h-8 rounded-full bg-indigo-100 border border-indigo-200 flex items-center justify-center text-indigo-700 font-bold text-xs shadow-xs">
                   {initials}
                 </div>
                 <div className="hidden lg:block text-left">
-                  <div className="text-xs font-bold text-slate-200 truncate max-w-[120px]">{displayName}</div>
-                  <div className="text-[10px] text-slate-400 truncate max-w-[120px]">{displayOrg}</div>
+                  <div className="text-xs font-bold text-slate-900 truncate max-w-[120px]">{displayName}</div>
+                  <div className="text-[10px] text-slate-500 truncate max-w-[120px]">{displayOrg}</div>
                 </div>
               </Link>
               <button
                 onClick={handleLogout}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-colors ml-1"
+                className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors ml-1"
                 title="Sign Out with Supabase"
               >
                 <LogOut className="w-4 h-4" />
@@ -107,7 +107,7 @@ export const Navbar: React.FC = () => {
           ) : (
             <Link
               to="/login"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-cyan-400 border border-slate-700 text-xs font-bold transition-all"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white border border-slate-800 text-xs font-bold transition-all shadow-xs"
             >
               <LogIn className="w-3.5 h-3.5" />
               <span>Sign In</span>

@@ -7,7 +7,7 @@ import { ConfidenceChart } from '../components/analytics/ConfidenceChart';
 import { InsightsCard } from '../components/analytics/InsightsCard';
 import { LoadingState } from '../components/common/LoadingState';
 import { EmptyState } from '../components/common/EmptyState';
-import { Download, BarChart3, AlertCircle } from 'lucide-react';
+import { Download, AlertCircle } from 'lucide-react';
 import { Button } from '../components/common/Button';
 import { useNavigate } from 'react-router-dom';
 
@@ -101,10 +101,10 @@ export const AnalyticsPage: React.FC = () => {
       {/* Top Bar Header */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl lg:text-2xl font-black text-slate-50 tracking-tight flex items-center gap-2">
+          <h2 className="text-xl lg:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
             Infrastructure Visual Analytics & Trends
           </h2>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs font-medium text-slate-500">
             User-isolated macro statistics, defect frequency analysis, AI certainty ratings, and operational trends
           </p>
         </div>
@@ -117,8 +117,8 @@ export const AnalyticsPage: React.FC = () => {
       </div>
 
       {error && (
-        <div className="p-4 rounded-2xl bg-red-950/40 border border-red-800 text-xs text-red-300 flex items-center gap-2">
-          <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
+        <div className="p-4 rounded-2xl bg-red-50 border border-red-200 text-xs text-red-800 flex items-center gap-2 font-medium">
+          <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
           <span>{error}</span>
         </div>
       )}

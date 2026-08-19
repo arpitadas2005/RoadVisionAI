@@ -6,7 +6,7 @@ interface DamageTypeChartProps {
   history: DetectionResult[];
 }
 
-const COLORS = ['#ef4444', '#f97316', '#06b6d4', '#a855f7'];
+const COLORS = ['#4F46E5', '#F59E0B', '#06B6D4', '#8B5CF6'];
 
 export const DamageTypeChart: React.FC<DamageTypeChartProps> = ({ history }) => {
   const typeCounts: Record<string, number> = {
@@ -28,11 +28,11 @@ export const DamageTypeChart: React.FC<DamageTypeChartProps> = ({ history }) => 
   const data = Object.entries(typeCounts).map(([name, value]) => ({ name, value }));
 
   return (
-    <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 text-slate-100 flex flex-col h-full">
-      <h3 className="text-sm font-bold uppercase tracking-wider text-slate-300 mb-1">
+    <div className="bg-white border border-slate-200/80 rounded-3xl p-6 text-slate-900 flex flex-col h-full shadow-sm">
+      <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-900 mb-1">
         Damage Type Distribution
       </h3>
-      <p className="text-xs text-slate-400 mb-4">Breakdown by specific road defect classification</p>
+      <p className="text-xs text-slate-500 font-medium mb-4">Breakdown by specific road defect classification</p>
 
       <div className="flex-1 w-full min-h-[220px]">
         <ResponsiveContainer width="100%" height="100%">
@@ -52,15 +52,16 @@ export const DamageTypeChart: React.FC<DamageTypeChartProps> = ({ history }) => 
             </Pie>
             <Tooltip
               contentStyle={{
-                backgroundColor: '#0f172a',
-                borderColor: '#334155',
+                backgroundColor: '#FFFFFF',
+                borderColor: '#E2E8F0',
                 borderRadius: '12px',
-                color: '#f8fafc',
+                color: '#0F172A',
                 fontSize: '12px',
+                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
               }}
             />
             <Legend
-              formatter={(value) => <span className="text-xs text-slate-300">{value}</span>}
+              formatter={(value) => <span className="text-xs text-slate-600 font-bold">{value}</span>}
               layout="horizontal"
               verticalAlign="bottom"
               align="center"

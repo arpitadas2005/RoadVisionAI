@@ -22,7 +22,7 @@ export function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
-        <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col md:flex-row antialiased">
+        <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col md:flex-row antialiased font-sans">
           {/* Responsive Desktop Sidebar Navigation */}
           <Sidebar />
 

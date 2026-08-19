@@ -6,7 +6,7 @@ import { AnnotatedCanvas } from '../components/result/AnnotatedCanvas';
 import { DetectionSummary } from '../components/result/DetectionSummary';
 import { ExportReportModal } from '../components/result/ExportReportModal';
 import { ErrorState } from '../components/common/ErrorState';
-import { ArrowLeft, RefreshCw, Sparkles } from 'lucide-react';
+import { ArrowLeft, RefreshCw } from 'lucide-react';
 import { Button } from '../components/common/Button';
 
 export const ResultPage: React.FC = () => {
@@ -44,20 +44,20 @@ export const ResultPage: React.FC = () => {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <Link to="/detect">
-            <button className="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:bg-slate-800 transition-colors">
+            <button className="p-2 rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors shadow-xs">
               <ArrowLeft className="w-5 h-5" />
             </button>
           </Link>
           <div>
             <div className="flex items-center gap-2">
-              <h2 className="text-xl font-black text-slate-50 tracking-tight">
+              <h2 className="text-xl font-black text-slate-900 tracking-tight">
                 AI Visual Inspection Result
               </h2>
-              <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-cyan-950 text-cyan-300 border border-cyan-800">
+              <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-indigo-50 text-indigo-700 border border-indigo-200 font-bold">
                 {result.id}
               </span>
             </div>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-500 font-medium">
               Annotated bounding box analysis and road hazard report
             </p>
           </div>

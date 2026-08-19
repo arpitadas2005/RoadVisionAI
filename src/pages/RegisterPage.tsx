@@ -22,7 +22,7 @@ export const RegisterPage: React.FC = () => {
 
   // Compute password strength rating
   const getPasswordStrength = (pwd: string) => {
-    if (!pwd) return { label: 'Empty', score: 0, color: 'bg-slate-800' };
+    if (!pwd) return { label: 'Empty', score: 0, color: 'bg-slate-200' };
     if (pwd.length < 8) return { label: 'Weak (Min 8 chars)', score: 30, color: 'bg-red-500' };
     
     const hasLetters = /[a-zA-Z]/.test(pwd);
@@ -30,12 +30,12 @@ export const RegisterPage: React.FC = () => {
     const hasSpecial = /[^a-zA-Z0-9]/.test(pwd);
 
     if (hasLetters && hasNumbers && hasSpecial && pwd.length >= 10) {
-      return { label: 'Strong (Great)', score: 100, color: 'bg-emerald-400' };
+      return { label: 'Strong (Great)', score: 100, color: 'bg-emerald-500' };
     }
     if ((hasLetters && hasNumbers) || (hasLetters && hasSpecial)) {
-      return { label: 'Medium', score: 65, color: 'bg-amber-400' };
+      return { label: 'Medium', score: 65, color: 'bg-amber-500' };
     }
-    return { label: 'Weak', score: 35, color: 'bg-red-400' };
+    return { label: 'Weak', score: 35, color: 'bg-red-500' };
   };
 
   const strength = getPasswordStrength(password);
@@ -92,31 +92,31 @@ export const RegisterPage: React.FC = () => {
 
   return (
     <div className="max-w-md mx-auto py-10 px-4">
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl shadow-slate-950 space-y-6">
+      <div className="bg-white border border-slate-200/80 rounded-3xl p-8 shadow-sm space-y-6">
         <div className="text-center space-y-2">
-          <div className="p-3 bg-cyan-500/10 text-cyan-400 rounded-2xl w-fit mx-auto border border-cyan-500/20 shadow-lg shadow-cyan-500/10">
+          <div className="p-3 bg-indigo-50 text-indigo-600 rounded-2xl w-fit mx-auto border border-indigo-100 shadow-xs">
             <ShieldCheck className="w-8 h-8" />
           </div>
-          <h2 className="text-2xl font-black text-slate-50">Create Operator Account</h2>
-          <p className="text-xs text-slate-400">Register new surveyor via Supabase Authentication</p>
+          <h2 className="text-2xl font-black text-slate-900">Create Operator Account</h2>
+          <p className="text-xs font-medium text-slate-500">Register new surveyor via Supabase Authentication</p>
         </div>
 
         {error && (
-          <div className="p-3 rounded-xl bg-red-950/40 border border-red-800/60 text-xs text-red-300 flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
+          <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-xs text-red-800 flex items-center gap-2 font-medium">
+            <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
             <span>{error}</span>
           </div>
         )}
 
         {successNotice && (
-          <div className="p-4 rounded-xl bg-emerald-950/40 border border-emerald-800/60 text-xs text-emerald-300 space-y-2">
-            <div className="flex items-center gap-2 font-bold text-emerald-400">
+          <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-800 space-y-2 font-medium">
+            <div className="flex items-center gap-2 font-bold text-emerald-700">
               <CheckCircle className="w-5 h-5 shrink-0" />
               <span>Account Created Successfully</span>
             </div>
-            <p className="text-slate-300 leading-relaxed">{successNotice}</p>
+            <p className="text-slate-700 leading-relaxed">{successNotice}</p>
             <div className="pt-2">
-              <Link to="/login" className="inline-block text-cyan-400 font-bold hover:underline">
+              <Link to="/login" className="inline-block text-indigo-600 font-bold hover:underline">
                 Proceed to Sign In &rarr;
               </Link>
             </div>
@@ -126,42 +126,42 @@ export const RegisterPage: React.FC = () => {
         {!successNotice && (
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1.5">Full Name</label>
+              <label className="block text-xs font-bold text-slate-700 mb-1.5">Full Name</label>
               <input
                 type="text"
                 required
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 placeholder="Jane Doe"
-                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 text-sm focus:outline-none focus:border-cyan-400"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-sm focus:outline-none focus:border-indigo-500"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1.5">Official Email</label>
+              <label className="block text-xs font-bold text-slate-700 mb-1.5">Official Email</label>
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="jane.doe@city.gov"
-                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 text-sm focus:outline-none focus:border-cyan-400"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-sm focus:outline-none focus:border-indigo-500"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1.5">Organization / Division</label>
+              <label className="block text-xs font-bold text-slate-700 mb-1.5">Organization / Division</label>
               <input
                 type="text"
                 value={org}
                 onChange={(e) => setOrg(e.target.value)}
                 placeholder="Road Maintenance & Public Works"
-                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 text-sm focus:outline-none focus:border-cyan-400"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-sm focus:outline-none focus:border-indigo-500"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1.5">Password</label>
+              <label className="block text-xs font-bold text-slate-700 mb-1.5">Password</label>
               <div className="relative">
                 <input
                   type={showPassword ? 'text' : 'password'}
@@ -170,12 +170,12 @@ export const RegisterPage: React.FC = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••••••"
-                  className="w-full px-3.5 py-2.5 pr-10 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 text-sm focus:outline-none focus:border-cyan-400"
+                  className="w-full px-3.5 py-2.5 pr-10 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-sm focus:outline-none focus:border-indigo-500"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 p-1"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -186,10 +186,10 @@ export const RegisterPage: React.FC = () => {
               {password && (
                 <div className="mt-2 space-y-1">
                   <div className="flex items-center justify-between text-[11px]">
-                    <span className="text-slate-400">Strength:</span>
-                    <span className="font-bold text-slate-200">{strength.label}</span>
+                    <span className="text-slate-500 font-medium">Strength:</span>
+                    <span className="font-bold text-slate-800">{strength.label}</span>
                   </div>
-                  <div className="w-full h-1.5 bg-slate-950 rounded-full overflow-hidden border border-slate-800">
+                  <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
                     <div
                       className={`h-full transition-all duration-300 ${strength.color}`}
                       style={{ width: `${strength.score}%` }}
@@ -200,14 +200,14 @@ export const RegisterPage: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1.5">Confirm Password</label>
+              <label className="block text-xs font-bold text-slate-700 mb-1.5">Confirm Password</label>
               <input
                 type={showPassword ? 'text' : 'password'}
                 required
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="••••••••••••"
-                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 text-sm focus:outline-none focus:border-cyan-400"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-sm focus:outline-none focus:border-indigo-500"
               />
             </div>
 
@@ -215,7 +215,7 @@ export const RegisterPage: React.FC = () => {
               type="submit"
               variant="primary"
               size="lg"
-              className="w-full"
+              className="w-full bg-indigo-600 hover:bg-indigo-700 border-indigo-600 text-white"
               isLoading={isLoading}
               icon={<UserPlus className="w-4 h-4" />}
             >
@@ -224,9 +224,9 @@ export const RegisterPage: React.FC = () => {
           </form>
         )}
 
-        <div className="text-center text-xs text-slate-400 pt-2 border-t border-slate-800/80">
+        <div className="text-center text-xs text-slate-500 font-medium pt-2 border-t border-slate-100">
           Already registered?{' '}
-          <Link to="/login" className="text-cyan-400 font-bold hover:underline">
+          <Link to="/login" className="text-indigo-600 font-bold hover:underline">
             Sign In Here
           </Link>
         </div>

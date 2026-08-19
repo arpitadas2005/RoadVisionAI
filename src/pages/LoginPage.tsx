@@ -123,24 +123,24 @@ export const LoginPage: React.FC = () => {
 
   return (
     <div className="max-w-md mx-auto py-12 px-4">
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl shadow-slate-950 space-y-6">
+      <div className="bg-white border border-slate-200/80 rounded-3xl p-8 shadow-sm space-y-6">
         <div className="text-center space-y-2">
-          <div className="p-3 bg-cyan-500/10 text-cyan-400 rounded-2xl w-fit mx-auto border border-cyan-500/20 shadow-lg shadow-cyan-500/10">
+          <div className="p-3 bg-indigo-50 text-indigo-600 rounded-2xl w-fit mx-auto border border-indigo-100 shadow-xs">
             <ShieldCheck className="w-8 h-8" />
           </div>
-          <h2 className="text-2xl font-black text-slate-50">Operator Sign In</h2>
-          <p className="text-xs text-slate-400">Access RoadVisionAI command console via Supabase Auth</p>
+          <h2 className="text-2xl font-black text-slate-900">Operator Sign In</h2>
+          <p className="text-xs font-medium text-slate-500">Access RoadVisionAI command console via Supabase Auth</p>
         </div>
 
         {error && (
-          <div className="p-3 rounded-xl bg-red-950/40 border border-red-800/60 text-xs text-red-300 space-y-2">
+          <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-xs text-red-800 space-y-2 font-medium">
             <div className="flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
+              <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
               <span>{error}</span>
             </div>
 
             {isUnconfirmedEmail && (
-              <div className="pt-2 border-t border-red-900/40">
+              <div className="pt-2 border-t border-red-200">
                 <Button
                   type="button"
                   variant="outline"
@@ -158,15 +158,15 @@ export const LoginPage: React.FC = () => {
         )}
 
         {resendSuccess && (
-          <div className="p-3 rounded-xl bg-emerald-950/40 border border-emerald-800/60 text-xs text-emerald-300 flex items-center gap-2">
-            <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
+          <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-800 flex items-center gap-2 font-medium">
+            <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
             <span>{resendSuccess}</span>
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+            <label className="block text-xs font-bold text-slate-700 mb-1.5">
               Official Email Address
             </label>
             <input
@@ -175,13 +175,13 @@ export const LoginPage: React.FC = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="operator@city.gov"
-              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 text-sm focus:outline-none focus:border-cyan-400"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-sm focus:outline-none focus:border-indigo-500"
             />
           </div>
 
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <label className="block text-xs font-semibold text-slate-300">Password</label>
+              <label className="block text-xs font-bold text-slate-700">Password</label>
               <button
                 type="button"
                 onClick={() => {
@@ -190,7 +190,7 @@ export const LoginPage: React.FC = () => {
                   setForgotSuccess(null);
                   setShowForgotModal(true);
                 }}
-                className="text-xs text-cyan-400 hover:underline font-medium"
+                className="text-xs text-indigo-600 hover:underline font-bold"
               >
                 Forgot Password?
               </button>
@@ -202,12 +202,12 @@ export const LoginPage: React.FC = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••••••"
-                className="w-full px-3.5 py-2.5 pr-10 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 text-sm focus:outline-none focus:border-cyan-400"
+                className="w-full px-3.5 py-2.5 pr-10 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-sm focus:outline-none focus:border-indigo-500"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 p-1"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -219,7 +219,7 @@ export const LoginPage: React.FC = () => {
             type="submit"
             variant="primary"
             size="lg"
-            className="w-full"
+            className="w-full bg-indigo-600 hover:bg-indigo-700 border-indigo-600 text-white"
             isLoading={isLoading}
             icon={<LogIn className="w-4 h-4" />}
           >
@@ -227,9 +227,9 @@ export const LoginPage: React.FC = () => {
           </Button>
         </form>
 
-        <div className="text-center text-xs text-slate-400 pt-2 border-t border-slate-800/80">
+        <div className="text-center text-xs text-slate-500 font-medium pt-2 border-t border-slate-100">
           Need an account?{' '}
-          <Link to="/register" className="text-cyan-400 font-bold hover:underline">
+          <Link to="/register" className="text-indigo-600 font-bold hover:underline">
             Register Survey Operator
           </Link>
         </div>
@@ -237,28 +237,28 @@ export const LoginPage: React.FC = () => {
 
       {/* Forgot Password Modal */}
       {showForgotModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+          <div className="bg-white border border-slate-200 rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-4">
             <div className="flex items-center gap-3">
-              <div className="p-2.5 bg-cyan-500/10 text-cyan-400 rounded-xl">
+              <div className="p-2.5 bg-indigo-50 text-indigo-600 rounded-xl border border-indigo-100">
                 <KeyRound className="w-6 h-6" />
               </div>
               <div>
-                <h3 className="text-lg font-bold text-slate-100">Reset Password</h3>
-                <p className="text-xs text-slate-400">Receive a Supabase password recovery link</p>
+                <h3 className="text-lg font-bold text-slate-900">Reset Password</h3>
+                <p className="text-xs text-slate-500 font-medium">Receive a Supabase password recovery link</p>
               </div>
             </div>
 
             {forgotError && (
-              <div className="p-3 rounded-xl bg-red-950/40 border border-red-800/60 text-xs text-red-300 flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
+              <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-xs text-red-800 flex items-center gap-2 font-medium">
+                <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
                 <span>{forgotError}</span>
               </div>
             )}
 
             {forgotSuccess && (
-              <div className="p-3 rounded-xl bg-emerald-950/40 border border-emerald-800/60 text-xs text-emerald-300 flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
+              <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-800 flex items-center gap-2 font-medium">
+                <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
                 <span>{forgotSuccess}</span>
               </div>
             )}
@@ -266,14 +266,14 @@ export const LoginPage: React.FC = () => {
             {!forgotSuccess && (
               <form onSubmit={handleForgotPassword} className="space-y-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">Registered Email</label>
+                  <label className="block text-xs font-bold text-slate-700 mb-1.5">Registered Email</label>
                   <input
                     type="email"
                     required
                     value={forgotEmail}
                     onChange={(e) => setForgotEmail(e.target.value)}
                     placeholder="operator@city.gov"
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 text-sm focus:outline-none focus:border-cyan-400"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-sm focus:outline-none focus:border-indigo-500"
                   />
                 </div>
 

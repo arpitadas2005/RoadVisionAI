@@ -132,12 +132,12 @@ export const DashboardPage: React.FC = () => {
   return (
     <div className="space-y-8">
       {/* Header Banner */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-900/90 border border-slate-800 p-6 rounded-3xl shadow-2xl">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white border border-slate-200/80 p-6 rounded-3xl shadow-sm">
         <div className="space-y-1">
-          <h2 className="text-2xl font-black text-slate-50 tracking-tight flex items-center gap-2">
+          <h2 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
             Infrastructure Monitoring Center
           </h2>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs font-medium text-slate-500">
             Real-time damage detection summary and municipal road condition index
           </p>
         </div>
@@ -160,15 +160,15 @@ export const DashboardPage: React.FC = () => {
           value={summary?.total_detections || 0}
           subtitle="Real-time DB"
           trend={{ value: 'DB Sync', isPositive: true }}
-          icon={<FileCheck className="w-5 h-5 text-cyan-400" />}
-          accentColor="cyan"
+          icon={<FileCheck className="w-5 h-5 text-indigo-600" />}
+          accentColor="indigo"
         />
         <StatCard
           title="Damage Instances"
           value={summary?.total_damage_instances || 0}
           subtitle="AI Segmented"
           trend={{ value: 'YOLO v8', isPositive: true }}
-          icon={<Zap className="w-5 h-5 text-amber-400" />}
+          icon={<Zap className="w-5 h-5 text-amber-600" />}
           accentColor="amber"
         />
         <StatCard
@@ -176,7 +176,7 @@ export const DashboardPage: React.FC = () => {
           value={summary?.critical_count || 0}
           subtitle="Needs Action"
           trend={{ value: 'Priority', isPositive: false }}
-          icon={<AlertTriangle className="w-5 h-5 text-red-400" />}
+          icon={<AlertTriangle className="w-5 h-5 text-red-600" />}
           accentColor="red"
         />
         <StatCard
@@ -184,19 +184,19 @@ export const DashboardPage: React.FC = () => {
           value={`${summary?.average_road_health_index || 75} / 100`}
           subtitle="City Average"
           trend={{ value: 'Index', isPositive: true }}
-          icon={<TrendingUp className="w-5 h-5 text-emerald-400" />}
+          icon={<TrendingUp className="w-5 h-5 text-emerald-600" />}
           accentColor="emerald"
         />
       </div>
 
       {/* Charts & Analytics Breakdown */}
       {summary?.total_detections === 0 ? (
-        <div className="bg-slate-900/90 border border-slate-800 rounded-3xl p-12 text-center space-y-4">
-          <div className="p-4 bg-cyan-500/10 text-cyan-400 rounded-2xl w-fit mx-auto border border-cyan-500/20">
+        <div className="bg-white border border-slate-200/80 rounded-3xl p-12 text-center space-y-4 shadow-sm">
+          <div className="p-4 bg-indigo-50 text-indigo-600 rounded-2xl w-fit mx-auto border border-indigo-100 shadow-xs">
             <Scan className="w-8 h-8" />
           </div>
-          <h3 className="text-xl font-bold text-slate-100">No Road Inspections Yet</h3>
-          <p className="text-xs text-slate-400 max-w-md mx-auto">
+          <h3 className="text-xl font-bold text-slate-900">No Road Inspections Yet</h3>
+          <p className="text-xs text-slate-500 max-w-md mx-auto">
             You haven't conducted any road damage inspections. Upload a road photo, video, or use your camera to generate AI detection reports.
           </p>
           <Link to="/detect">
@@ -208,12 +208,14 @@ export const DashboardPage: React.FC = () => {
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Severity Distribution Pie Chart */}
-          <div className="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 space-y-4">
+          <div className="bg-white border border-slate-200/80 rounded-3xl p-6 space-y-4 shadow-sm">
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-bold text-slate-100 uppercase tracking-wider">
+              <h3 className="text-xs font-extrabold text-slate-900 uppercase tracking-wider">
                 Severity Rating Distribution
               </h3>
-              <span className="text-xs font-mono text-slate-400">User Scoped</span>
+              <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200">
+                User Scoped
+              </span>
             </div>
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
@@ -232,34 +234,36 @@ export const DashboardPage: React.FC = () => {
                     ))}
                   </Pie>
                   <Tooltip
-                    contentStyle={{ backgroundColor: '#0F172A', borderColor: '#334155', borderRadius: '12px' }}
-                    itemStyle={{ color: '#F8FAFC', fontSize: '12px' }}
+                    contentStyle={{ backgroundColor: '#FFFFFF', borderColor: '#E2E8F0', borderRadius: '12px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
+                    itemStyle={{ color: '#0F172A', fontSize: '12px', fontWeight: 'bold' }}
                   />
-                  <Legend wrapperStyle={{ fontSize: '12px', color: '#94A3B8' }} />
+                  <Legend wrapperStyle={{ fontSize: '12px', color: '#475569' }} />
                 </PieChart>
               </ResponsiveContainer>
             </div>
           </div>
 
           {/* Input Type Distribution Bar Chart */}
-          <div className="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 space-y-4">
+          <div className="bg-white border border-slate-200/80 rounded-3xl p-6 space-y-4 shadow-sm">
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-bold text-slate-100 uppercase tracking-wider">
+              <h3 className="text-xs font-extrabold text-slate-900 uppercase tracking-wider">
                 Inspection Input Media Source
               </h3>
-              <span className="text-xs font-mono text-cyan-400">Multi-Modal</span>
+              <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200">
+                Multi-Modal
+              </span>
             </div>
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={inputTypeData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#1E293B" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" />
                   <XAxis dataKey="type" stroke="#64748B" fontSize={12} />
                   <YAxis stroke="#64748B" fontSize={12} />
                   <Tooltip
-                    contentStyle={{ backgroundColor: '#0F172A', borderColor: '#334155', borderRadius: '12px' }}
-                    itemStyle={{ color: '#F8FAFC', fontSize: '12px' }}
+                    contentStyle={{ backgroundColor: '#FFFFFF', borderColor: '#E2E8F0', borderRadius: '12px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
+                    itemStyle={{ color: '#0F172A', fontSize: '12px', fontWeight: 'bold' }}
                   />
-                  <Bar dataKey="count" fill="#06B6D4" radius={[6, 6, 0, 0]} />
+                  <Bar dataKey="count" fill="#4F46E5" radius={[6, 6, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>

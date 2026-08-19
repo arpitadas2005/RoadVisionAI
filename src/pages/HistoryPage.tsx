@@ -4,7 +4,7 @@ import { HistoryTable } from '../components/history/HistoryTable';
 import { FilterBar } from '../components/history/FilterBar';
 import { LoadingState } from '../components/common/LoadingState';
 import { FilterOptions } from '../types';
-import { Trash2, AlertTriangle, Search } from 'lucide-react';
+import { Trash2, AlertTriangle } from 'lucide-react';
 import { Button } from '../components/common/Button';
 
 export const HistoryPage: React.FC = () => {
@@ -121,10 +121,10 @@ export const HistoryPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-900/90 border border-slate-800 p-6 rounded-3xl">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white border border-slate-200/80 p-6 rounded-3xl shadow-sm">
         <div>
-          <h2 className="text-2xl font-black text-slate-50 tracking-tight">Inspection History Audit</h2>
-          <p className="text-xs text-slate-400">Searchable log of previous AI road damage detection surveys</p>
+          <h2 className="text-2xl font-black text-slate-900 tracking-tight">Inspection History Audit</h2>
+          <p className="text-xs font-medium text-slate-500">Searchable log of previous AI road damage detection surveys</p>
         </div>
       </div>
 
@@ -146,16 +146,16 @@ export const HistoryPage: React.FC = () => {
 
       {/* Confirmation Delete Modal */}
       {deleteTargetId && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-md w-full space-y-4 shadow-2xl">
-            <div className="flex items-center gap-3 text-red-400">
-              <div className="p-2.5 bg-red-500/10 rounded-2xl border border-red-500/20">
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white border border-slate-200 rounded-3xl p-6 max-w-md w-full space-y-4 shadow-2xl">
+            <div className="flex items-center gap-3 text-red-600">
+              <div className="p-2.5 bg-red-50 rounded-2xl border border-red-100 shadow-xs">
                 <AlertTriangle className="w-6 h-6" />
               </div>
-              <h3 className="text-lg font-bold text-slate-50">Delete Inspection Record?</h3>
+              <h3 className="text-lg font-bold text-slate-900">Delete Inspection Record?</h3>
             </div>
-            <p className="text-xs text-slate-300 leading-relaxed">
-              Are you sure you want to delete inspection record <strong className="text-cyan-400">{deleteTargetId}</strong>? This action will permanently remove the record from your account history.
+            <p className="text-xs text-slate-600 leading-relaxed font-medium">
+              Are you sure you want to delete inspection record <strong className="text-indigo-600 font-mono">{deleteTargetId}</strong>? This action will permanently remove the record from your account history.
             </p>
             <div className="flex items-center justify-end gap-3 pt-2">
               <Button variant="outline" size="sm" onClick={() => setDeleteTargetId(null)}>
@@ -164,7 +164,7 @@ export const HistoryPage: React.FC = () => {
               <Button
                 variant="primary"
                 size="sm"
-                className="bg-red-600 hover:bg-red-500 border-red-500"
+                className="bg-red-600 hover:bg-red-700 border-red-600 text-white"
                 isLoading={isDeleting}
                 onClick={handleDeleteRecord}
                 icon={<Trash2 className="w-4 h-4" />}
